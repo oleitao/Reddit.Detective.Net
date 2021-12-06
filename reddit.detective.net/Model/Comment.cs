@@ -6,7 +6,10 @@ namespace reddit.detective.net.Model
     {
         private string id;
         private string name;
+        public Comment()
+        {
 
+        }
         public Comment(string _id, string _name)
         {
             this.id = _id;

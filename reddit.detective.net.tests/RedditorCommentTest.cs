@@ -6,17 +6,17 @@ using Xunit;
 
 namespace reddit.detective.net.tests
 {
-    public class RedditorTest
+    public class RedditorCommentTest
     {
         [Fact]
-        public void SearchRedditor()
+        public void SearchRedditorComments()
         {
             var service = new RedditDataService();
             var settings = ConnectionSettings.CreateBasicAuth(Credentials.uri, Credentials.neo4jUserName, Credentials.neo4jPassword);
-            var api = new RedditClient(Credentials.appId, Credentials.refreshToken, Credentials.appSecret, Credentials.accessToken, Credentials.userAgent);
-            string redditorName = "pmol87";
+            var api = new RedditClient(Credentials.appId, Credentials.refreshToken, Credentials.appSecret, Credentials.accessToken, Credentials.userAgent);            
+            string redditorName = "PortugalLivre";
 
-            RedditDataMapping.GetRedditor(settings, api, service, redditorName).GetAwaiter().GetResult();
+            RedditDataMapping.GetRedditorComments(settings, api, service, redditorName).GetAwaiter().GetResult();
         }
     }
 }
