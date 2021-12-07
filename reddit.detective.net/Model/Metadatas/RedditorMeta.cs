@@ -2,7 +2,7 @@
 using Reddit.Controllers;
 using System.Collections.Generic;
 
-namespace reddit.detective.net.Model.Metadatas
+namespace Reddit.Detective.Net.Model.Metadatas
 {
     public class RedditorMeta
     {

@@ -3,9 +3,9 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 16
 VisualStudioVersion = 16.0.31321.278
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "reddit.detective.net", "reddit.detective.net\reddit.detective.net.csproj", "{8692ECAB-A30A-4CDF-88EF-E7FCB9D66CD6}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Reddit.Detective.Net", "reddit.detective.net\Reddit.Detective.Net.csproj", "{8692ECAB-A30A-4CDF-88EF-E7FCB9D66CD6}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "reddit.detective.net.tests", "reddit.detective.net.tests\reddit.detective.net.tests.csproj", "{67FBC55E-6137-47A6-8401-0A62C40213DB}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Reddit.Detective.Net.Tests", "reddit.detective.net.tests\Reddit.Detective.Net.Tests.csproj", "{67FBC55E-6137-47A6-8401-0A62C40213DB}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

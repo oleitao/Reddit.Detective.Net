@@ -1,10 +1,9 @@
-﻿using reddit.detective.net.Controllers;
-using reddit.detective.net.Services;
-using reddit.detective.net.Settings;
-using Reddit;
+﻿using Reddit.Detective.Net.Controllers;
+using Reddit.Detective.Net.Services;
+using Reddit.Detective.Net.Settings;
 using System.Threading.Tasks;
 
-namespace reddit.detective.net.tests.Mapping
+namespace Reddit.Detective.Net.tests.Mapping
 {
     public static class RedditDataMapping
     {

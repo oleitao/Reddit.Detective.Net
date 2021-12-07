@@ -1,16 +1,16 @@
 ﻿using Neo4j.Driver;
-using reddit.detective.net.Settings;
+using Reddit.Detective.Net.Settings;
 using Reddit;
 using System;
 using System.Threading.Tasks;
-using reddit.detective.net.Serializer;
-using reddit.detective.net.Model;
+using Reddit.Detective.Net.Serializer;
+using Reddit.Detective.Net.Model;
 using System.Collections.Generic;
 using System.Text;
 using System.Linq;
-using reddit.detective.net.Model.Metadatas;
+using Reddit.Detective.Net.Model.Metadatas;
 
-namespace reddit.detective.net
+namespace Reddit.Detective.Net
 {
     public class Neo4JClient : IDisposable
     {

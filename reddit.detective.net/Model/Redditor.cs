@@ -1,21 +1,19 @@
 ﻿using Newtonsoft.Json;
 using System;
 
-namespace reddit.detective.net.Model
+namespace Reddit.Detective.Net.Model
 {
     public class Redditor
     {
-        private string name;
-
         [JsonProperty("id")]
         public string Id { get { return new Random().Next().ToString(); } }
 
         [JsonProperty("name")]
-        public string Name { get => name; set => name = value; }
+        public string Name { get; set; }
 
         public Redditor(string _name)
         {
-            this.name = _name;
+            this.Name = _name;
         }
     }
 }

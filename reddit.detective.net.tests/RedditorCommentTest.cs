@@ -1,7 +1,8 @@
-using reddit.detective.net.Services;
-using reddit.detective.net.Settings;
-using reddit.detective.net.tests.Mapping;
 using Reddit;
+using Reddit.Detective.Net.Services;
+using Reddit.Detective.Net.Settings;
+using Reddit.Detective.Net.tests.Mapping;
+using Reddit.Detective.Net.Tests;
 using Xunit;
 
 namespace reddit.detective.net.tests

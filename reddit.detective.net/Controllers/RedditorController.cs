@@ -1,8 +1,8 @@
 ﻿using Neo4j.Driver;
-using reddit.detective.net.Model;
-using reddit.detective.net.Model.Metadatas;
-using reddit.detective.net.Serializer;
-using reddit.detective.net.Services;
+using Reddit.Detective.Net.Model;
+using Reddit.Detective.Net.Model.Metadatas;
+using Reddit.Detective.Net.Serializer;
+using Reddit.Detective.Net.Services;
 using Reddit;
 using System;
 using System.Collections.Generic;
@@ -10,7 +10,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace reddit.detective.net.Controllers
+namespace Reddit.Detective.Net.Controllers
 {
     public static class RedditorController
     {

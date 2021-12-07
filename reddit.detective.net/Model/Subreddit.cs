@@ -1,18 +1,15 @@
 ﻿using Newtonsoft.Json;
 using System;
 
-namespace reddit.detective.net.Model
+namespace Reddit.Detective.Net.Model
 {
     public class Subreddit
     {
         [JsonProperty("id")]
         public string Id { get { return new Random().Next().ToString(); } }
 
-
-        private string name;
-
         [JsonProperty("name")]
-        public string Name { get => name; set => name = value; }
+        public string Name { get; set; }
 
         public Subreddit(string name)
         {

@@ -5,7 +5,7 @@ using System;
 using System.Collections.Generic;
 using Newtonsoft.Json;
 
-namespace reddit.detective.net.Serializer.Converters
+namespace Reddit.Detective.Net.Serializer.Converters
 {
     /// <summary>
     /// This Converter is only a slightly modified converter from the JSON Extension library. 

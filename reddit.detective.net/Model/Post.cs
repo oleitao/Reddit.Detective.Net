@@ -1,22 +1,19 @@
 ﻿using Newtonsoft.Json;
 
-namespace reddit.detective.net.Model
+namespace Reddit.Detective.Net.Model
 {
     public class Post
     {
-        private string id;
-        private string title;
-
         public Post(string _id, string _title)
         {
-            this.id = _id;
-            this.title = _title;
+            this.Id = _id;
+            this.Title = _title;
         }
 
         [JsonProperty("id")]
-        public string Id { get => id; set => id = value; }
+        public string Id { get; set; }
 
         [JsonProperty("title")]
-        public string Title { get => title; set => title = value; }
+        public string Title { get; set; }
     }
 }

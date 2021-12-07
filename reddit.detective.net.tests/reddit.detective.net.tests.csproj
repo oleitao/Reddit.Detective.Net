@@ -22,7 +22,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\reddit.detective.net\reddit.detective.net.csproj" />
+    <ProjectReference Include="..\reddit.detective.net\Reddit.Detective.Net.csproj" />
   </ItemGroup>
 
 </Project>

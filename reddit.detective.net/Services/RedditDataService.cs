@@ -1,7 +1,7 @@
-﻿using reddit.detective.net.Model.Metadatas;
+﻿using Reddit.Detective.Net.Model.Metadatas;
 using System.Collections.Generic;
 
-namespace reddit.detective.net.Services
+namespace Reddit.Detective.Net.Services
 {
     public interface IRedditDataService
     {

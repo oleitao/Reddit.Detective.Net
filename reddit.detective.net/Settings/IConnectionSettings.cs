@@ -1,6 +1,6 @@
 ﻿using Neo4j.Driver;
 
-namespace reddit.detective.net.Settings
+namespace Reddit.Detective.Net.Settings
 {
     public interface IConnectionSettings
     {

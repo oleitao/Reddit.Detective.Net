@@ -3,9 +3,9 @@
 
 using System.Collections.Generic;
 using Newtonsoft.Json;
-using reddit.detective.net.Serializer.Converters;
+using Reddit.Detective.Net.Serializer.Converters;
 
-namespace reddit.detective.net.Serializer
+namespace Reddit.Detective.Net.Serializer
 {
     public static class ParameterSerializer
     {

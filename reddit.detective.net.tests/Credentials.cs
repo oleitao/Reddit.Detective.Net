@@ -1,4 +1,4 @@
-﻿namespace reddit.detective.net.tests
+﻿namespace Reddit.Detective.Net.Tests
 {
     public static class Credentials
     {
