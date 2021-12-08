@@ -25,4 +25,8 @@
     <ProjectReference Include="..\reddit.detective.net\Reddit.Detective.Net.csproj" />
   </ItemGroup>
 
+  <ItemGroup>
+    <Folder Include="Screenshots\" />
+  </ItemGroup>
+
 </Project>
