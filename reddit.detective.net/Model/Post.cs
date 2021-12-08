@@ -1,19 +1,19 @@
 ﻿using Newtonsoft.Json;
+using System;
 
 namespace Reddit.Detective.Net.Model
 {
     public class Post
     {
-        public Post(string _id, string _title)
-        {
-            this.Id = _id;
-            this.Title = _title;
-        }
-
         [JsonProperty("id")]
-        public string Id { get; set; }
+        public string Id { get { return new Random().Next().ToString(); } }
 
         [JsonProperty("title")]
         public string Title { get; set; }
+
+        public Post(string _title)
+        {
+            this.Title = _title;
+        }
     }
 }

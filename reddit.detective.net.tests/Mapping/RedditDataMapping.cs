@@ -9,12 +9,12 @@ namespace Reddit.Detective.Net.tests.Mapping
     {
         #region Methods
 
-        public static async Task GetRedditor(ConnectionSettings settings, RedditClient api, IRedditDataService service, string redditorName)
+        public static async Task GetRedditor(ConnectionSettings settings, RedditClient api, IRedditDataService service, string [] redditorName)
         {
             using (var client = new Neo4JClient(settings, api))
             {
                 await RedditorController.ResetContent(client.Driver);
-                await RedditorController.DropIndexes(client.Driver);
+                //await RedditorController.DropIndexes(client.Driver);
                 await RedditorController.CreateIndices(client.Driver);
                 await RedditorController.SearchRedditor(api, client.Driver, redditorName, service);
             }
@@ -25,7 +25,7 @@ namespace Reddit.Detective.Net.tests.Mapping
             using (var client = new Neo4JClient(settings, api))
             {
                 await RedditorCommentsController.ResetContent(client.Driver);
-                await RedditorCommentsController.DropIndexes(client.Driver);
+                //await RedditorCommentsController.DropIndexes(client.Driver);
                 await RedditorCommentsController.CreateIndices(client.Driver);
                 await RedditorCommentsController.SearchRedditorComments(api, client.Driver, redditorName, service);
             }

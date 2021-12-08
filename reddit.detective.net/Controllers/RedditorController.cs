@@ -66,27 +66,30 @@ namespace Reddit.Detective.Net.Controllers
             }
         }
 
-        public static async Task SearchRedditor(RedditClient api, IDriver driver, string userName, IRedditDataService service, int limit = 10)
+        public static async Task SearchRedditor(RedditClient api, IDriver driver, string [] userNames, IRedditDataService service, int limit = 10)
         {
+            RedditorMeta redditor = null;
+            foreach (var userName in userNames)
+            {
+                Reddit.Controllers.User user = api.User(userName);
+                Redditor redditorUser = new Redditor(user.Name);
 
-            Reddit.Controllers.User user = api.User(userName);
-            Redditor redditorUser = new Redditor(user.Name);
+                IList<Reddit.Controllers.Post> redditorPosts = user.PostHistory;
+                IList<Reddit.Controllers.Comment> redditorComments = user.CommentHistory;
 
-            IList<Reddit.Controllers.Post> redditorPosts = user.PostHistory;
-            IList<Reddit.Controllers.Comment> redditorComments = user.CommentHistory;
+                IList<Post> posts = (from n in redditorPosts select new Post(n.Title)).ToArray<Post>();
+                IList<Comment> comments = (from n in redditorComments select new Comment(n.Subreddit)).ToArray<Comment>();
 
-            IList<Post> posts = (from n in redditorPosts select new Post(n.Id, n.Title)).ToArray<Post>();
-            IList<Comment> comments = (from n in redditorComments select new Comment(n.Id, n.Subreddit)).ToArray<Comment>();
+                redditor = new RedditorMeta(redditorUser, posts, comments);
+                redditor.Redditor = redditorUser;
+                redditor.Posts = posts;
+                redditor.Comments = comments;
 
-            RedditorMeta redditor = new RedditorMeta(redditorUser, posts, comments);
-            redditor.Redditor = redditorUser;
-            redditor.Posts = posts;
-            redditor.Comments = comments;
+                service.Metadatas.Add(redditor);
 
-            service.Metadatas.Add(redditor);
-
-            await MappingRedditorMeta(redditor, driver);
-            await CreateRedditorRelationships(service.Metadatas, driver);
+                await MappingRedditorMeta(service, driver);
+                await CreateRedditorRelationships(service.Metadatas, driver);
+            }
         }
 
         public static async Task CreateRedditorRelationships(IList<RedditorMeta> metadatas, IDriver driver)
@@ -155,16 +158,19 @@ namespace Reddit.Detective.Net.Controllers
             }
         }
 
-        public static async Task MappingRedditorMeta(RedditorMeta redditorMeta, IDriver driver)
+        public static async Task MappingRedditorMeta(IRedditDataService service, IDriver driver)
         {
-            var redditors = ToIList<Redditor>(new List<Redditor>()
+            foreach (var redditorMeta in service.Metadatas.ToList())
             {
-                new Redditor(redditorMeta.Redditor.Name)
-            });
-
-            await MappingRedditors(redditors, driver);
-            await MappingPosts(redditorMeta.Posts, driver);
-            await MappingComments(redditorMeta.Comments, driver);
+                var redditors = ToIList<Redditor>(new List<Redditor>()
+                {
+                    new Redditor(redditorMeta.Redditor.Name)
+                });
+                
+                await MappingRedditors(redditors, driver);
+                await MappingPosts(redditorMeta.Posts, driver);
+                await MappingComments(redditorMeta.Comments, driver);
+            }
         }
 
         static IList<T> ToIList<T>(List<T> t)

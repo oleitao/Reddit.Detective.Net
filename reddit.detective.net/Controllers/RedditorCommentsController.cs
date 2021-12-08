@@ -3,8 +3,6 @@ using Reddit.Detective.Net.Model;
 using Reddit.Detective.Net.Model.Metadatas;
 using Reddit.Detective.Net.Serializer;
 using Reddit.Detective.Net.Services;
-using Reddit;
-using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -75,8 +73,8 @@ namespace Reddit.Detective.Net.Controllers
             IList<Reddit.Controllers.Comment> redditorComments = user.CommentHistory;
 
 
-            IList<Post> posts = (from n in redditorPosts select new Post(n.Id, n.Title)).ToList<Post>();
-            IList<Comment> comments = (from n in redditorComments select new Comment(n.Id, n.Subreddit)).ToList<Comment>();
+            IList<Post> posts = (from n in redditorPosts select new Post(n.Title)).ToList<Post>();
+            IList<Comment> comments = (from n in redditorComments select new Comment(n.Subreddit)).ToList<Comment>();
 
             RedditorMeta redditor = new RedditorMeta(redditorUser, posts, comments);
             redditor.Redditor = redditorUser;
