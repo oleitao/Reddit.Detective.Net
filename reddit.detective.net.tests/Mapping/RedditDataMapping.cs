@@ -31,6 +31,17 @@ namespace Reddit.Detective.Net.tests.Mapping
             }
         }
 
+        public static async Task GetRedditorCommonSubreddits(ConnectionSettings settings, RedditClient api, IRedditDataService service, string[] redditorName, string subredditSearchName)
+        {
+            using (var client = new Neo4JClient(settings, api))
+            {
+                await RedditorController.ResetContent(client.Driver);
+                //await RedditorController.DropIndexes(client.Driver);
+                await RedditorController.CreateIndices(client.Driver);
+                await RedditorController.SearchRedditorCommonSubreddits(api, client.Driver, redditorName, subredditSearchName, service);
+            }
+        }
+
         #endregion
     }
 }

@@ -9,6 +9,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using Reddit.Inputs.Subreddits;
 
 namespace Reddit.Detective.Net.Controllers
 {
@@ -92,27 +93,76 @@ namespace Reddit.Detective.Net.Controllers
             }
         }
 
+        public static async Task SearchRedditorCommonSubreddits(RedditClient api, IDriver driver, string[] userNames, string subredditSearchName, IRedditDataService service, int limit = 10)
+        {
+            RedditorMeta redditor = null;
+            foreach (var userName in userNames)
+            {
+                Reddit.Controllers.User user = api.User(userName);
+                Redditor redditorUser = new Redditor(user.Name);
+
+                var relatedSubreddits = api.Models.Subreddits.SearchSubreddits(new SubredditsSearchNamesInput(subredditSearchName));
+
+                Things.PostContainer postsHistory = api.Models.Users.PostHistory(userName, "submitted", new Reddit.Inputs.Users.UsersHistoryInput(context: limit));
+                Things.CommentContainer commentsHistory = api.Models.Users.CommentHistory(userName, "comments", new Reddit.Inputs.Users.UsersHistoryInput(context: limit));
+
+                var subredditsUnion = (from x in postsHistory.Data.Children select x.Data.Subreddit).Union((from y in commentsHistory.Data.Children select y.Data.Subreddit)).ToList();
+                IList<Subreddit> subreddits = (from n in subredditsUnion select new Subreddit(n)).ToArray<Subreddit>();
+                redditor = new RedditorMeta(redditorUser, subreddits);
+
+                service.Metadatas.Add(redditor);
+
+                await MappingRedditorMeta(service, driver);                
+            }
+
+            await CreateRedditorRelationships(service.Metadatas, driver);
+        }
+
         public static async Task CreateRedditorRelationships(IList<RedditorMeta> metadatas, IDriver driver)
         {
-            string cypher = new StringBuilder()
-                .AppendLine("UNWIND {metadatas} AS metadata")
-                // Find the Movie:
-                .AppendLine("MATCH (m:Redditor { name: metadata.redditor.name })")
-                // Create Post Relationships:
-                .AppendLine("WITH metadata, m")
-                .AppendLine("UNWIND metadata.posts AS post")
-                .AppendLine("MATCH (p:Post { title: post.title })")
-                .AppendLine("MERGE (m)-[r:POSTED_IN]->(p)")
-                // Create Comment Relationship:
-                .AppendLine("WITH metadata, m")
-                .AppendLine("UNWIND metadata.comments AS comment")
-                .AppendLine("MATCH (c:Comment { name: comment.name })")
-                .AppendLine("MERGE (m)-[r:COMMENTED]->(c)")
-                .ToString();
+            StringBuilder cypher = new StringBuilder();
+
+            if (metadatas.FirstOrDefault() is RedditorMeta metadata)
+            {
+                cypher.AppendLine("UNWIND {metadatas} AS metadata");
+
+                if (metadata.Redditor != null)
+                {
+                    // Find the Redditor:
+                    cypher.AppendLine("MATCH (m:Redditor { name: metadata.redditor.name })");
+                }
+
+                if (metadata.Posts != null && metadata.Posts.Count > 0)
+                {
+                    // Create Post Relationships:
+                    cypher.AppendLine("WITH metadata, m");
+                    cypher.AppendLine("UNWIND metadata.posts AS post");
+                    cypher.AppendLine("MATCH (p:Post { title: post.title })");
+                    cypher.AppendLine("MERGE (m)-[r:POSTED_IN]->(p)");
+                }
+
+                if (metadata.Comments != null && metadata.Comments.Count > 0)
+                {
+                    // Create Comment Relationship:
+                    cypher.AppendLine("WITH metadata, m");
+                    cypher.AppendLine("UNWIND metadata.comments AS comment");
+                    cypher.AppendLine("MATCH (c:Comment { name: comment.name })");
+                    cypher.AppendLine("MERGE (m)-[r:COMMENTED]->(c)");
+                }
+
+                if (metadata.Subreddits != null && metadata.Subreddits.Count > 0)
+                {
+                    //Create Subreddit Relationship:
+                    cypher.AppendLine("WITH metadata, m");
+                    cypher.AppendLine("UNWIND metadata.subreddits AS subreddit");
+                    cypher.AppendLine("MATCH (s:Subreddit { name: subreddit.name })");
+                    cypher.AppendLine("MERGE (m)-[r:LINKED]->(s)");
+                }
+            }
 
             using (var session = driver.AsyncSession())
             {
-                await session.RunAsync(cypher, new Dictionary<string, object>() { { "metadatas", ParameterSerializer.ToDictionary(metadatas) } });
+                await session.RunAsync(cypher.ToString(), new Dictionary<string, object>() { { "metadatas", ParameterSerializer.ToDictionary(metadatas) } });
             }
         }
 
@@ -158,6 +208,20 @@ namespace Reddit.Detective.Net.Controllers
             }
         }
 
+        public static async Task MappingSubreddits(IList<Subreddit> subreddits, IDriver driver)
+        {
+            string cypher = new StringBuilder()
+                .AppendLine("UNWIND {subreddits} AS subreddit")
+                .AppendLine("MERGE (p:Subreddit {name: subreddit.name})")
+                .AppendLine("SET p = subreddit")
+                .ToString();
+
+            using (var session = driver.AsyncSession())
+            {
+                await session.RunAsync(cypher, new Dictionary<string, object>() { { "subreddits", ParameterSerializer.ToDictionary(subreddits) } });
+            }
+        }
+
         public static async Task MappingRedditorMeta(IRedditDataService service, IDriver driver)
         {
             foreach (var redditorMeta in service.Metadatas.ToList())
@@ -167,9 +231,17 @@ namespace Reddit.Detective.Net.Controllers
                     new Redditor(redditorMeta.Redditor.Name)
                 });
                 
-                await MappingRedditors(redditors, driver);
-                await MappingPosts(redditorMeta.Posts, driver);
-                await MappingComments(redditorMeta.Comments, driver);
+                if(redditors != null && redditors.Count > 0)
+                    await MappingRedditors(redditors, driver);
+
+                if(redditorMeta.Posts != null && redditorMeta.Posts.Count > 0)
+                    await MappingPosts(redditorMeta.Posts, driver);
+
+                if (redditorMeta.Comments != null && redditorMeta.Comments.Count > 0)
+                    await MappingComments(redditorMeta.Comments, driver);
+
+                if (redditorMeta.Subreddits != null && redditorMeta.Subreddits.Count > 0)
+                    await MappingSubreddits(redditorMeta.Subreddits, driver);
             }
         }
 
