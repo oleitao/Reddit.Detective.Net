@@ -29,6 +29,12 @@ namespace Reddit.Detective.Net.Model.Metadatas
             this.subreddits = _subreddits;
         }
 
+        public RedditorMeta(Redditor _redditor, IList<Post> _posts)
+        {
+            this.posts = _posts;
+            this.redditor = _redditor;
+        }
+
         public RedditorMeta(Redditor _redditor, IList<Post> _posts, IList<Comment> _comments)
         {
             this.posts = _posts;

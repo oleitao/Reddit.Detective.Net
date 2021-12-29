@@ -3,13 +3,11 @@ using Reddit.Detective.Net.Model;
 using Reddit.Detective.Net.Model.Metadatas;
 using Reddit.Detective.Net.Serializer;
 using Reddit.Detective.Net.Services;
-using Reddit;
-using System;
+using Reddit.Inputs.Subreddits;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-using Reddit.Inputs.Subreddits;
 
 namespace Reddit.Detective.Net.Controllers
 {
@@ -67,7 +65,7 @@ namespace Reddit.Detective.Net.Controllers
             }
         }
 
-        public static async Task SearchRedditor(RedditClient api, IDriver driver, string [] userNames, IRedditDataService service, int limit = 10)
+        public static async Task RedditorsPostsWithComments(RedditClient api, IDriver driver, string [] userNames, IRedditDataService service, int limit = 10)
         {
             RedditorMeta redditor = null;
             foreach (var userName in userNames)
@@ -78,13 +76,19 @@ namespace Reddit.Detective.Net.Controllers
                 IList<Reddit.Controllers.Post> redditorPosts = user.PostHistory;
                 IList<Reddit.Controllers.Comment> redditorComments = user.CommentHistory;
 
-                IList<Post> posts = (from n in redditorPosts select new Post(n.Title)).ToArray<Post>();
-                IList<Comment> comments = (from n in redditorComments select new Comment(n.Subreddit)).ToArray<Comment>();
+                List<Post> posts = new List<Post>();
+                List<Comment> comments = new List<Comment>();
 
-                redditor = new RedditorMeta(redditorUser, posts, comments);
-                redditor.Redditor = redditorUser;
-                redditor.Posts = posts;
-                redditor.Comments = comments;
+                foreach (var post in redditorPosts)
+                {
+                    Reddit.Controllers.Comments comm = api.Subreddit(post.Subreddit).Post(post.Fullname).Comments;
+                    if (comm != null)
+                    {
+                        posts.Add(new Post(post.Fullname, post.Title));
+                    }
+                }
+
+                redditor = new RedditorMeta(redditorUser, posts);
 
                 service.Metadatas.Add(redditor);
 
@@ -236,7 +240,7 @@ namespace Reddit.Detective.Net.Controllers
 
                 if(redditorMeta.Posts != null && redditorMeta.Posts.Count > 0)
                     await MappingPosts(redditorMeta.Posts, driver);
-
+                
                 if (redditorMeta.Comments != null && redditorMeta.Comments.Count > 0)
                     await MappingComments(redditorMeta.Comments, driver);
 

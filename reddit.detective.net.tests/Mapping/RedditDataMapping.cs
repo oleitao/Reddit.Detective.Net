@@ -9,14 +9,14 @@ namespace Reddit.Detective.Net.tests.Mapping
     {
         #region Methods
 
-        public static async Task GetRedditor(ConnectionSettings settings, RedditClient api, IRedditDataService service, string [] redditorName)
+        public static async Task RedditorsPostsWithComments(ConnectionSettings settings, RedditClient api, IRedditDataService service, string [] redditorName)
         {
             using (var client = new Neo4JClient(settings, api))
             {
                 await RedditorController.ResetContent(client.Driver);
                 //await RedditorController.DropIndexes(client.Driver);
                 await RedditorController.CreateIndices(client.Driver);
-                await RedditorController.SearchRedditor(api, client.Driver, redditorName, service);
+                await RedditorController.RedditorsPostsWithComments(api, client.Driver, redditorName, service);
             }
         }
 
